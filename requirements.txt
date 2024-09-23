@@ -1,4 +1,11 @@
 django 
+numpy
 Pillow
 pandas
 matplotlib
+openai
+requests
+huggingface_hub
+python-dotenv
+transformers==4.43.0
+#pip install torch torchvision torchaudio
