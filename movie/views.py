@@ -26,13 +26,13 @@ def about(request):
 def statistics_view(request):
     matplotlib.use('Agg')
     
-    years = Movie.objects.values_list('yar', flat=True).distinct().order_by('yar')
+    years = Movie.objects.values_list('year', flat=True).distinct().order_by('year')
     movie_count_by_year = {}
     for year in years:
         if year:
-            movies_in_year = Movie.objects.filter(yar=year)
+            movies_in_year = Movie.objects.filter(year=year)
         else:
-            movies_in_year = Movie.objects.filter(yar__isnull=True)
+            movies_in_year = Movie.objects.filter(year__isnull=True)
             year = "None"
         count = movies_in_year.count()
         movie_count_by_year[year] = count

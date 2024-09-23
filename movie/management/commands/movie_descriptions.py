@@ -1,41 +1,15 @@
 #importar librerías
 import os
+from openai import OpenAI
 import json
-import transformers
-import torch
-from huggingface_hub import login
 
-contorl = False
-token = os.getenv('huggin_key')
-login(token=token)
-
-model="gpt2"
-pipeline = transformers.pipeline(
-        "text-generation",
-        model=model,
-        model_kwargs={"torch_dtype": torch.bfloat16},
-        #device_map="auto",
-    )
-
-def get_completion(prompt):
-    global contorl
-    if contorl == True:
-        exit()
-
-    messages = [
-        {"role": "user", "content": prompt},
-    ]
-
-    outputs = pipeline(
-        messages,
-        max_new_tokens=256,
-    )
-    print(outputs)
-    print(outputs[0]["generated_text"][-1])
-    contorl = True
+client = OpenAI(
+    # This is the default and can be omitted
+    api_key=os.getenv('openai_key'),
+)
 
 #Se carga la lista de películas de movie_titles.json
-with open('moviesw3.json', 'r') as file:
+with open('movie_titles.json', 'r') as file:
     file_content = file.read()
     movies = json.loads(file_content)
 
@@ -45,6 +19,15 @@ print(movies[0])
 #Se genera una función auxiliar que ayudará a la comunicación con la api de openai
 #Esta función recibe el prompt y el modelo a utilizar (por defecto gpt-3.5-turbo)
 #devuelve la consulta hecha a la api
+
+def get_completion(prompt, model="gpt-3.5-turbo"):
+    messages = [{"role": "user", "content": prompt}]
+    response = client.chat.completions.create(
+        model=model,
+        messages=messages,
+        temperature=0,
+    )
+    return response.choices[0].message.content
 
 #Definimos una instrucción general que le vamos a dar al modelo 
 
